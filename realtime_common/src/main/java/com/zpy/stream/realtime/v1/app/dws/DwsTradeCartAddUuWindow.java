@@ -29,13 +29,6 @@ import org.apache.flink.streaming.api.functions.windowing.AllWindowFunction;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
-
-/**
- * @Package com.zpy.stream.realtime.v1.app.dws.DwsTradeCartAddUuWindow
- * @Author pengyu_zhu
- * @description: DwsTradeCartAddUuWindow
- */
-
 public class DwsTradeCartAddUuWindow {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
