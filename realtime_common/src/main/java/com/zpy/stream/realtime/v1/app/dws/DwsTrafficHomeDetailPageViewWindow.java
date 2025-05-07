@@ -29,7 +29,6 @@ import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFuncti
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
-
 public class DwsTrafficHomeDetailPageViewWindow {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -42,7 +41,7 @@ public class DwsTrafficHomeDetailPageViewWindow {
 
         DataStreamSource<String> kafkaStrDS = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka_Source");
 
-        //TODO 1.对流中数据类型进行转换   jsonStr->jsonObj
+        //TODO 1.对流中数据类型进行转换
         SingleOutputStreamOperator<JSONObject> jsonObjDS = kafkaStrDS.map(JSON::parseObject);
         //TODO 2.过滤首页以及详情页
         SingleOutputStreamOperator<JSONObject> filterDS = jsonObjDS.filter(

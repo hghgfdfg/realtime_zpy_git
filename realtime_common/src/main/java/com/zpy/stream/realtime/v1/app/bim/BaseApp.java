@@ -26,12 +26,6 @@ import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;
 import org.apache.hadoop.hbase.client.Connection;
 
-/**
- * 实时维度数据处理主程序
- * 功能：从Kafka读取业务数据，从MySQL读取配置信息，处理后写入HBase
- * @Package com.zpy.stream.realtime.v1.app.bim.BaseApp
- * @Author pengyu_zhu
- */
 public class BaseApp {
     public static void main(String[] args) throws Exception {
         // 1. 初始化Flink流处理环境

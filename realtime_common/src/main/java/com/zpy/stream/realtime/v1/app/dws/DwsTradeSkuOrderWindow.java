@@ -35,13 +35,6 @@ import org.apache.hadoop.hbase.client.Connection;
 
 import java.math.BigDecimal;
 
-/**
- * @Package com.zpy.stream.realtime.v1.app.dws.DwsTradeSkuOrderWindow
- * @Author pengyu_zhu
- * @Date 2025/4/18 13:52
- * @description: DwsTradeSkuOrderWindow
- */
-
 public class DwsTradeSkuOrderWindow {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
