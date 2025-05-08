@@ -2,11 +2,11 @@ package com.zpy.stream.realtime.v1.app.dws;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.zpy.stream.realtime.v1.bean.UserLoginBean;
-import com.zpy.stream.realtime.v1.function.BeanToJsonStrMapFunction;
-import com.zpy.stream.realtime.v1.utils.DateFormatUtil;
-import com.zpy.stream.realtime.v1.utils.FlinkSinkUtil;
-import com.zpy.stream.realtime.v1.utils.FlinkSourceUtil;
+import com.v1.bean.UserLoginBean;
+import com.v1.function.BeanToJsonStrMapFunction;
+import com.v1.utils.DateFormatUtil;
+import com.v1.utils.FlinkSinkUtil;
+import com.v1.utils.FlinkSourceUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.eventtime.SerializableTimestampAssigner;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
