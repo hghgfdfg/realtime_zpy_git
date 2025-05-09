@@ -1,0 +1,255 @@
+#### **1. 项目概述**
+
+- **项目名称**：用户画像项目 - 达摩盘基础特征
+
+- **目标**：构建精准的用户画像标签体系，优化电商广告投放策略，提高广告效果和转化率。
+
+- **基础特征标签**：年龄、性别、年代、身高、体重、星座。
+
+
+---
+
+#### **2. 任务描述**
+
+- **角色**：电商平台广告运营人员
+
+- **需求**：通过用户画像标签体系优化广告投放策略，吸引更多商家投放广告。
+
+
+---
+
+#### **3. 基础特征标签详情**
+
+##### **3.1 用户年龄标签**
+
+- **标签定义**：根据用户行为数据（浏览、搜索、收藏、购买等）判断年龄段（18-24岁、25-29岁等6类）。
+
+- **数据来源**：淘宝用户行为日志、商品类目属性数据。
+
+- **处理逻辑**：
+
+    - 直接计算：若存在出生年份，按当前年份计算。
+
+    - 多行为加权判定：类目偏好、品牌偏好、价格敏感度、时间行为、搜索词分析、社交互动行为、设备信息。
+
+- **权重分配**：类目偏好（30%）、品牌偏好（20%）、价格敏感度（15%）等。
+
+- **更新频率**：每日更新。
+
+
+##### **3.2 用户性别标签**
+
+- **标签定义**：综合用户行为判断性别倾向（女性、男性、家庭用户）。
+
+- **数据来源**：用户行为数据（购买、加购、浏览）、商品一级品类分布。
+
+- **处理逻辑**：
+
+    - 行为权重：购买（50%）、加购/收藏（30%）、浏览（20%）。
+
+    - 阈值划分：女性得分 > 男性得分 + 10% 则判定为女性用户。
+
+- **更新频率**：每日更新（近30天数据），每月全量更新。
+
+
+##### **3.3 用户体重标签**
+
+- **标签定义**：基于用户填写或设备同步的体重信息生成标准化标签。
+
+- **数据来源**：订单信息、会员资料、健康设备同步、活动表单。
+
+- **处理逻辑**：
+
+    - 数据清洗：单位统一（kg）、异常值过滤（<30kg或>200kg）。
+
+    - 优先级：健康设备数据（权重1.0） > 订单信息（0.8） > 会员资料（0.6）。
+
+
+##### **3.4 用户身高标签**
+
+- **标签定义**：记录用户实名制身高或购物场景中间接确认的身高信息。
+
+- **数据来源**：用户资料库、订单备注、客服工单、退货原因库、智能硬件数据。
+
+- **处理逻辑**：
+
+    - 数据清洗：过滤异常值（<100cm或>250cm）。
+
+    - 冲突处理：取加权平均值或最近3次有效记录众数。
+
+##### **3.5 星座标签**
+
+- **标签定义**：根据用户生日解析十二星座。
+
+- **数据来源**：用户填写的生日字段。
+
+- **处理逻辑**：按月份和日期严格匹配星座分界点。
+
+- **更新频率**：实时更新（用户修改生日）、每日离线批量更新。
+
+
+---
+
+#### **4. 工时与产出物**
+
+- **工时预估**：4人日
+
+- **产出物**：
+
+    1. 达摩盘基础特征设计文档（含ADS层表设计、标签实现方案）。
+
+    2. 达摩盘基础特征代码（分层与不分层实现，带注释）。
+
+    3. 达摩盘基础特征测试文档（测试记录、SQL，数据一致性验证）。
+
+    4. 达摩盘基础特征上线记录（原始数据、处理后数据、运行日志）。
+# 达摩盘用户画像基础特征建表语句
+## 1. 用户基础信息表
+CREATE TABLE `user_basic_info` (
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `username` varchar(64) DEFAULT NULL COMMENT '用户名',
+  `register_time` datetime DEFAULT NULL COMMENT '注册时间',
+  `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
+  `data_source` varchar(32) DEFAULT NULL COMMENT '数据来源',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`user_id`),
+  KEY `idx_username` (`username`),
+  KEY `idx_update_time` (`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户基础信息表';
+## 2. 用户年龄标签表
+CREATE TABLE `user_age_tag` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `age_range` varchar(16) NOT NULL COMMENT '年龄段:18-24,25-29,30-34,35-39,40-49,50+',
+  `confidence_score` decimal(5,2) DEFAULT NULL COMMENT '置信度分数(0-1)',
+  `data_source` varchar(32) DEFAULT NULL COMMENT '数据来源:birth_year/behavior_analysis',
+  `birth_year` int(4) DEFAULT NULL COMMENT '出生年份(如有)',
+  `behavior_data_days` int(11) DEFAULT '30' COMMENT '行为数据天数',
+  `tag_status` tinyint(1) DEFAULT '1' COMMENT '标签状态:1有效,0无效',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  KEY `idx_age_range` (`age_range`),
+  KEY `idx_update_time` (`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户年龄标签表';
+## 3. 用户性别标签表
+CREATE TABLE `user_gender_tag` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `gender` enum('female','male','family') NOT NULL COMMENT '性别标签:female女性,male男性,family家庭用户',
+  `female_score` decimal(5,2) DEFAULT NULL COMMENT '女性特征得分',
+  `male_score` decimal(5,2) DEFAULT NULL COMMENT '男性特征得分',
+  `family_score` decimal(5,2) DEFAULT NULL COMMENT '家庭特征得分',
+  `main_category` varchar(64) DEFAULT NULL COMMENT '主要品类',
+  `data_days` int(11) DEFAULT '30' COMMENT '数据天数',
+  `tag_status` tinyint(1) DEFAULT '1' COMMENT '标签状态:1有效,0无效',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  KEY `idx_gender` (`gender`),
+  KEY `idx_update_time` (`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户性别标签表';
+## 4. 用户体重标签表
+CREATE TABLE `user_weight_tag` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `weight` decimal(5,1) DEFAULT NULL COMMENT '体重(kg)',
+  `data_source` enum('device','order','profile','activity') DEFAULT NULL COMMENT '数据来源:device设备,order订单,profile资料,activity活动',
+  `source_detail` varchar(128) DEFAULT NULL COMMENT '来源详情',
+  `last_device_sync_time` datetime DEFAULT NULL COMMENT '最后设备同步时间',
+  `is_abnormal` tinyint(1) DEFAULT '0' COMMENT '是否异常:1是,0否',
+  `tag_status` tinyint(1) DEFAULT '1' COMMENT '标签状态:1有效,0无效',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  KEY `idx_weight` (`weight`),
+  KEY `idx_update_time` (`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户体重标签表';
+## 5. 用户身高标签表
+CREATE TABLE `user_height_tag` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `height` int(4) DEFAULT NULL COMMENT '身高(cm)',
+  `data_source` enum('device','verified','shopping','customer_service','return') DEFAULT NULL COMMENT '数据来源:device设备,verified认证,shopping购物,customer_service客服,return退货',
+  `source_detail` varchar(128) DEFAULT NULL COMMENT '来源详情',
+  `size_inferred` tinyint(1) DEFAULT '0' COMMENT '是否尺码推断:1是,0否',
+  `size_code` varchar(16) DEFAULT NULL COMMENT '尺码代码',
+  `is_abnormal` tinyint(1) DEFAULT '0' COMMENT '是否异常:1是,0否',
+  `tag_status` tinyint(1) DEFAULT '1' COMMENT '标签状态:1有效,0无效',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  KEY `idx_height` (`height`),
+  KEY `idx_update_time` (`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户身高标签表';
+## 6. 用户星座标签表
+CREATE TABLE `user_zodiac_tag` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `zodiac` enum('aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces','unknown') DEFAULT 'unknown' COMMENT '星座',
+  `birthday` date DEFAULT NULL COMMENT '生日',
+  `birthday_source` varchar(32) DEFAULT NULL COMMENT '生日来源',
+  `tag_status` tinyint(1) DEFAULT '1' COMMENT '标签状态:1有效,0无效',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  KEY `idx_zodiac` (`zodiac`),
+  KEY `idx_update_time` (`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户星座标签表';
+## 7. 用户年代标签表
+CREATE TABLE `user_generation_tag` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `generation` enum('post-00s','post-90s','post-80s','post-70s','post-60s','other') DEFAULT NULL COMMENT '年代标签:00后,90后,80后,70后,60后,其他',
+  `birth_year` int(4) DEFAULT NULL COMMENT '出生年份',
+  `data_source` varchar(32) DEFAULT NULL COMMENT '数据来源',
+  `tag_status` tinyint(1) DEFAULT '1' COMMENT '标签状态:1有效,0无效',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  KEY `idx_generation` (`generation`),
+  KEY `idx_update_time` (`update_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户年代标签表';
+## 8. 用户标签更新日志表
+CREATE TABLE `user_tag_update_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `tag_type` enum('age','gender','weight','height','zodiac','generation') NOT NULL COMMENT '标签类型',
+  `old_value` varchar(64) DEFAULT NULL COMMENT '旧值',
+  `new_value` varchar(64) DEFAULT NULL COMMENT '新值',
+  `update_reason` varchar(128) DEFAULT NULL COMMENT '更新原因',
+  `operator` varchar(32) DEFAULT 'system' COMMENT '操作者',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_tag_type` (`tag_type`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户标签更新日志表';
+## 9. 用户行为数据汇总表
+CREATE TABLE `user_behavior_summary` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `data_date` date NOT NULL COMMENT '数据日期',
+  `view_count` int(11) DEFAULT '0' COMMENT '浏览次数',
+  `search_count` int(11) DEFAULT '0' COMMENT '搜索次数',
+  `favorite_count` int(11) DEFAULT '0' COMMENT '收藏次数',
+  `cart_count` int(11) DEFAULT '0' COMMENT '加购次数',
+  `order_count` int(11) DEFAULT '0' COMMENT '下单次数',
+  `payment_count` int(11) DEFAULT '0' COMMENT '支付次数',
+  `live_view_count` int(11) DEFAULT '0' COMMENT '直播观看次数',
+  `comment_count` int(11) DEFAULT '0' COMMENT '评论次数',
+  `share_count` int(11) DEFAULT '0' COMMENT '分享次数',
+  `device_type` varchar(32) DEFAULT NULL COMMENT '设备类型',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_user_date` (`user_id`,`data_date`),
+  KEY `idx_data_date` (`data_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户行为数据汇总表';
