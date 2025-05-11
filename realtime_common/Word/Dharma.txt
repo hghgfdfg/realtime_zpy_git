@@ -1,100 +1,96 @@
-#### **1. 项目概述**
+ 1. 项目概述
 
-- **项目名称**：用户画像项目 - 达摩盘基础特征
+- 项目名称：用户画像项目 - 达摩盘基础特征
 
-- **目标**：构建精准的用户画像标签体系，优化电商广告投放策略，提高广告效果和转化率。
+- 目标：构建精准的用户画像标签体系，优化电商广告投放策略，提高广告效果和转化率。
 
-- **基础特征标签**：年龄、性别、年代、身高、体重、星座。
-
-
----
-
-#### **2. 任务描述**
-
-- **角色**：电商平台广告运营人员
-
-- **需求**：通过用户画像标签体系优化广告投放策略，吸引更多商家投放广告。
+- 基础特征标签：年龄、性别、年代、身高、体重、星座。
 
 
 ---
 
-#### **3. 基础特征标签详情**
+ 2. 任务描述
 
-##### **3.1 用户年龄标签**
+- 角色：电商平台广告运营人员
 
-- **标签定义**：根据用户行为数据（浏览、搜索、收藏、购买等）判断年龄段（18-24岁、25-29岁等6类）。
+- 需求：通过用户画像标签体系优化广告投放策略，吸引更多商家投放广告。
 
-- **数据来源**：淘宝用户行为日志、商品类目属性数据。
 
-- **处理逻辑**：
+---
+
+ 3. 基础特征标签详情
+
+ 3.1 用户年龄标签
+
+- 标签定义：根据用户行为数据（浏览、搜索、收藏、购买等）判断年龄段（18-24岁、25-29岁等6类）。
+
+- 数据来源：淘宝用户行为日志、商品类目属性数据。
+
+- 处理逻辑：
 
     - 直接计算：若存在出生年份，按当前年份计算。
 
     - 多行为加权判定：类目偏好、品牌偏好、价格敏感度、时间行为、搜索词分析、社交互动行为、设备信息。
 
-- **权重分配**：类目偏好（30%）、品牌偏好（20%）、价格敏感度（15%）等。
+- 权重分配：类目偏好（30%）、品牌偏好（20%）、价格敏感度（15%）等。
 
-- **更新频率**：每日更新。
+- 更新频率：每日更新。
 
 
-##### **3.2 用户性别标签**
+ 3.2 用户性别标签
 
-- **标签定义**：综合用户行为判断性别倾向（女性、男性、家庭用户）。
+- 标签定义：综合用户行为判断性别倾向（女性、男性、家庭用户）。
 
-- **数据来源**：用户行为数据（购买、加购、浏览）、商品一级品类分布。
+- 数据来源：用户行为数据（购买、加购、浏览）、商品一级品类分布。
 
-- **处理逻辑**：
+- 处理逻辑：
 
     - 行为权重：购买（50%）、加购/收藏（30%）、浏览（20%）。
 
     - 阈值划分：女性得分 > 男性得分 + 10% 则判定为女性用户。
 
-- **更新频率**：每日更新（近30天数据），每月全量更新。
+ 3.3 用户体重标签
 
+- 标签定义：基于用户填写或设备同步的体重信息生成标准化标签。
 
-##### **3.3 用户体重标签**
+- 数据来源：订单信息、会员资料、健康设备同步、活动表单。
 
-- **标签定义**：基于用户填写或设备同步的体重信息生成标准化标签。
-
-- **数据来源**：订单信息、会员资料、健康设备同步、活动表单。
-
-- **处理逻辑**：
+- 处理逻辑：
 
     - 数据清洗：单位统一（kg）、异常值过滤（<30kg或>200kg）。
 
     - 优先级：健康设备数据（权重1.0） > 订单信息（0.8） > 会员资料（0.6）。
 
 
-##### **3.4 用户身高标签**
+ 3.4 用户身高标签
 
-- **标签定义**：记录用户实名制身高或购物场景中间接确认的身高信息。
+- 标签定义：记录用户实名制身高或购物场景中间接确认的身高信息。
 
-- **数据来源**：用户资料库、订单备注、客服工单、退货原因库、智能硬件数据。
+- 数据来源：用户资料库、订单备注、客服工单、退货原因库、智能硬件数据。
 
-- **处理逻辑**：
+- 处理逻辑：
 
     - 数据清洗：过滤异常值（<100cm或>250cm）。
 
     - 冲突处理：取加权平均值或最近3次有效记录众数。
 
-##### **3.5 星座标签**
+ 3.5 星座标签
 
-- **标签定义**：根据用户生日解析十二星座。
+- 标签定义：根据用户生日解析十二星座。
 
-- **数据来源**：用户填写的生日字段。
+- 数据来源：用户填写的生日字段。
 
-- **处理逻辑**：按月份和日期严格匹配星座分界点。
+- 处理逻辑：按月份和日期严格匹配星座分界点。
 
-- **更新频率**：实时更新（用户修改生日）、每日离线批量更新。
 
 
 ---
 
-#### **4. 工时与产出物**
+ 4. 工时与产出物
 
-- **工时预估**：4人日
+- 工时预估：4人日
 
-- **产出物**：
+- 产出物：
 
     1. 达摩盘基础特征设计文档（含ADS层表设计、标签实现方案）。
 
@@ -103,8 +99,8 @@
     3. 达摩盘基础特征测试文档（测试记录、SQL，数据一致性验证）。
 
     4. 达摩盘基础特征上线记录（原始数据、处理后数据、运行日志）。
-# 达摩盘用户画像基础特征建表语句
-## 1. 用户基础信息表
+ 达摩盘用户画像基础特征建表语句
+ 1. 用户基础信息表
 CREATE TABLE `user_basic_info` (
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
   `username` varchar(64) DEFAULT NULL COMMENT '用户名',
@@ -117,7 +113,7 @@ CREATE TABLE `user_basic_info` (
   KEY `idx_username` (`username`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户基础信息表';
-## 2. 用户年龄标签表
+ 2. 用户年龄标签表
 CREATE TABLE `user_age_tag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -134,7 +130,7 @@ CREATE TABLE `user_age_tag` (
   KEY `idx_age_range` (`age_range`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户年龄标签表';
-## 3. 用户性别标签表
+ 3. 用户性别标签表
 CREATE TABLE `user_gender_tag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -152,7 +148,7 @@ CREATE TABLE `user_gender_tag` (
   KEY `idx_gender` (`gender`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户性别标签表';
-## 4. 用户体重标签表
+ 4. 用户体重标签表
 CREATE TABLE `user_weight_tag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -169,7 +165,7 @@ CREATE TABLE `user_weight_tag` (
   KEY `idx_weight` (`weight`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户体重标签表';
-## 5. 用户身高标签表
+ 5. 用户身高标签表
 CREATE TABLE `user_height_tag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -187,7 +183,7 @@ CREATE TABLE `user_height_tag` (
   KEY `idx_height` (`height`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户身高标签表';
-## 6. 用户星座标签表
+ 6. 用户星座标签表
 CREATE TABLE `user_zodiac_tag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -202,7 +198,7 @@ CREATE TABLE `user_zodiac_tag` (
   KEY `idx_zodiac` (`zodiac`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户星座标签表';
-## 7. 用户年代标签表
+ 7. 用户年代标签表
 CREATE TABLE `user_generation_tag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -217,7 +213,7 @@ CREATE TABLE `user_generation_tag` (
   KEY `idx_generation` (`generation`),
   KEY `idx_update_time` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户年代标签表';
-## 8. 用户标签更新日志表
+ 8. 用户标签更新日志表
 CREATE TABLE `user_tag_update_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -232,7 +228,7 @@ CREATE TABLE `user_tag_update_log` (
   KEY `idx_tag_type` (`tag_type`),
   KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户标签更新日志表';
-## 9. 用户行为数据汇总表
+ 9. 用户行为数据汇总表
 CREATE TABLE `user_behavior_summary` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
