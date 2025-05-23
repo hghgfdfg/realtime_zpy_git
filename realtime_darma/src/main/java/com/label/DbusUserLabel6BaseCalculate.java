@@ -25,6 +25,7 @@ public class DbusUserLabel6BaseCalculate {
 
 //
 
+
     private static final String kafka_botstrap_servers = ConfigUtils.getString("kafka.bootstrap.servers");
     private static final String kafka_label_base6_topic = ConfigUtils.getString("kafka.result.label.base6.topic");
     private static final String kafka_label_base4_topic =    ConfigUtils.getString("kafka.result.label.base4.topic");
